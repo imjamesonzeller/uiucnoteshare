@@ -1,0 +1,118 @@
+# === GLOBAL ===
+.DS_Store
+*.log
+*.swp
+.env
+.env.local
+.idea/
+.vscode/
+node_modules/
+dist/
+build/
+
+# === BACKEND (Spring Boot + Kotlin + Gradle) ===
+/backend/build/
+!/backend/src/main/resources/static/   # keep if serving frontend from backend
+/backend/out/
+backend/.gradle/
+backend/.classpath
+backend/.project
+backend/.settings/
+backend/*.iml
+
+# Gradle wrapper
+/backend/gradle/
+backend/gradlew
+backend/gradlew.bat
+
+# === FLYWAY or DB Tools ===
+*.h2.db
+*.mv.db
+*.sqlite
+
+# === FRONTEND (React) ===
+/frontend/node_modules/
+/frontend/build/
+/frontend/.env
+/frontend/.env.local
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+frontend/.eslintcache
+frontend/.parcel-cache
+frontend/.turbo/
+
+# === COVERAGE / TESTING ===
+/coverage/
+*.lcov
+
+# === OS/Editor files ===
+*.bak
+*~
+*.tmp
+Thumbs.db
+
+HELP.md
+.gradle
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+bin/
+!**/src/main/**/bin/
+!**/src/test/**/bin/
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+out/
+!**/src/main/**/out/
+!**/src/test/**/out/
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+### VS Code ###
+.vscode/
+
+### Kotlin ###
+.kotlin
+
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+# testing
+/coverage
+
+# production
+/build
+
+# misc
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
