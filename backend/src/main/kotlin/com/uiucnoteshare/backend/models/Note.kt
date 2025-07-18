@@ -21,9 +21,6 @@ data class Note(
     @Column(nullable = false, length = 255)
     var title: String,
 
-    @Column(columnDefinition = "TEXT", nullable = false)
-    var fileUrl: String,
-
     @Column(columnDefinition = "TEXT")
     var caption: String? = null,
 

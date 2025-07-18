@@ -10,4 +10,6 @@ interface NoteRepository : JpaRepository<Note, UUID> {
     fun findAllByCourse_BaseCourse_Id(baseCourseId: UUID): List<Note>
 
     fun findAllByAuthorId(authorId: UUID): List<Note>
+
+    fun findAllByCourseIdIn(offeringIds: List<UUID>): List<Note>
 }

@@ -42,28 +42,6 @@ class CourseOfferingService(
         return notes.map { it.toNoteDTO() }
     }
 
-    fun Note.toNoteDTO(): NoteDTO {
-        val author = this.author
-        val offering = this.course
-
-        return NoteDTO(
-            id = this.id,
-            title = this.title,
-            caption = this.caption,
-            fileUrl = this.fileUrl,
-            createdAt = this.createdAt,
-            author = NoteAuthorDTO(
-                id = author.id!!,
-                firstName = author.firstName,
-                lastName = author.lastName,
-                profilePicture = author.profilePicture
-            ),
-            courseOfferingId = offering.id,
-            semester = offering.semester,
-            classCode = offering.classCode
-        )
-    }
-
     fun enrollUser(person: Person, offeringId: UUID): Enrollment {
         val offering = courseOfferingRepository.findByIdOrNull(offeringId)
             ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Course offering not found")
@@ -86,5 +64,26 @@ class CourseOfferingService(
             ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Enrollment not found")
 
         enrollmentRepository.delete(enrollment)
+    }
+
+    fun Note.toNoteDTO(): NoteDTO {
+        val author = this.author
+        val offering = this.course
+
+        return NoteDTO(
+            id = this.id,
+            title = this.title,
+            caption = this.caption,
+            createdAt = this.createdAt,
+            author = NoteAuthorDTO(
+                id = author.id!!,
+                firstName = author.firstName,
+                lastName = author.lastName,
+                profilePicture = author.profilePicture
+            ),
+            courseOfferingId = offering.id,
+            semester = offering.semester,
+            classCode = offering.classCode
+        )
     }
 }
