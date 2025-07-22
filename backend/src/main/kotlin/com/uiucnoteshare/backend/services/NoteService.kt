@@ -38,7 +38,7 @@ class NoteService(
         val presignedUrl = cloudflareR2Client.generatePresignedReadUrl(
             "uiuc-note-share",
             objectKey,
-            Duration.ofMinutes(10)
+            Duration.ofMinutes(2)
         )
 
         return FullNoteDTO(
@@ -55,14 +55,24 @@ class NoteService(
             ),
             courseOfferingId = offering.id,
             semester = offering.semester,
-            classCode = offering.classCode
+            classCode = offering.classCode,
+            fileUploaded = this.fileUploaded
         )
     }
 
     fun createNote(
         request: CreateNoteRequest,
         person: Person
-        ): CreatedNoteResponse {
+    ): CreatedNoteResponse {
+        val kMaxBytes = 10 * 1024 * 1024L
+        if (request.fileSizeByBytes > kMaxBytes) {
+            throw ResponseStatusException(HttpStatus.BAD_REQUEST, "File too large")
+        }
+
+        if (request.fileType != "application/pdf") {
+            throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Only PDFs are supported")
+        }
+
         val course = courseOfferingRepository.findById(request.courseOfferingId)
             .orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND, "Course not found") }
 
@@ -73,12 +83,11 @@ class NoteService(
             author = person,
         )
 
-
         val savedNote = noteRepository.save(note)
         val uploadUrl = cloudflareR2Client.generatePresignedUploadUrl(
             bucketName = "uiuc-note-share",
             objectKey = "notes/${savedNote.id}.pdf",
-            expiration = Duration.ofMinutes(10)
+            expiration = Duration.ofMinutes(2)
         )
 
         return CreatedNoteResponse(
@@ -97,5 +106,17 @@ class NoteService(
 
         noteRepository.delete(note)
         cloudflareR2Client.deleteObject("uiuc-note-share", "notes/${note.id}.pdf")
+    }
+
+    fun confirmNoteUpload(noteId: UUID, person: Person) {
+        val note = noteRepository.findByIdOrNull(noteId)
+            ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Note not found")
+
+        if (note.author.id != person.id) {
+            throw ResponseStatusException(HttpStatus.FORBIDDEN, "User is not allowed to confirm this note")
+        }
+
+        note.fileUploaded = true
+        noteRepository.save(note)
     }
 }

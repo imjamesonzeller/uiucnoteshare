@@ -3,6 +3,7 @@ package com.uiucnoteshare.backend.controllers
 import com.uiucnoteshare.backend.dtos.EnrolledCourseOfferingDTO
 import com.uiucnoteshare.backend.dtos.PersonDTO
 import com.uiucnoteshare.backend.models.Person
+import com.uiucnoteshare.backend.ratelimiter.RateLimit
 import com.uiucnoteshare.backend.services.EnrollmentService
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.Authentication
@@ -17,6 +18,7 @@ class UserController(
 ) {
 
     @GetMapping("/me")
+    @RateLimit("users")
     fun getSelfInfo(authentication: Authentication): ResponseEntity<PersonDTO> {
         val person = authentication.principal as Person
         val dto = PersonDTO(person)
@@ -24,6 +26,7 @@ class UserController(
     }
 
     @GetMapping("/me/enrollments")
+    @RateLimit("users")
     fun getSelfEnrollments(authentication: Authentication): ResponseEntity<List<EnrolledCourseOfferingDTO>> {
         val person = authentication.principal as Person
         val enrollments = enrollmentService.getEnrollmentsForUser(person.id!!)

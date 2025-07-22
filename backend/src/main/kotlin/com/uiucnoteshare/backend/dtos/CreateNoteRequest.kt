@@ -11,5 +11,14 @@ data class CreateNoteRequest(
     val caption: String? = null,
 
     @field:NotNull
-    val courseOfferingId: UUID
+    val courseOfferingId: UUID,
+
+    @field:NotNull
+    val fileSizeByBytes: Long,
+
+    @field:NotBlank
+    val fileType: String,
+
+    @field:NotNull
+    val captchaToken: String
 )

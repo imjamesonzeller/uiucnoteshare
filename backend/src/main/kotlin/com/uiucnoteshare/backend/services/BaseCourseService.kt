@@ -74,7 +74,8 @@ class BaseCourseService(
             ),
             courseOfferingId = offering.id,
             semester = offering.semester,
-            classCode = offering.classCode
+            classCode = offering.classCode,
+            fileUploaded = this.fileUploaded
         )
     }
 }

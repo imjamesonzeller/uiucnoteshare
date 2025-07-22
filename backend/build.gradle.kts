@@ -40,6 +40,10 @@ dependencies {
 
 	// --- AWS S3 SDK ---
 	implementation("software.amazon.awssdk:s3:2.32.3")
+
+	// --- Bucket4J - Lettuce (Redis) ---
+	implementation("com.github.vladimir-bukhtoyarov:bucket4j-redis:7.6.0")
+	implementation("io.lettuce:lettuce-core:6.7.1.RELEASE")
 }
 
 kotlin {

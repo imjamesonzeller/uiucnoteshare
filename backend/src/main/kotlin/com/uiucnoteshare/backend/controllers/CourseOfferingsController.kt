@@ -4,6 +4,7 @@ import com.uiucnoteshare.backend.dtos.CourseOfferingDTO
 import com.uiucnoteshare.backend.dtos.EnrolledCourseOfferingDTO
 import com.uiucnoteshare.backend.dtos.NoteDTO
 import com.uiucnoteshare.backend.models.Person
+import com.uiucnoteshare.backend.ratelimiter.RateLimit
 import com.uiucnoteshare.backend.services.CourseOfferingService
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.Authentication
@@ -17,6 +18,7 @@ class CourseOfferingsController(
 ) {
 
     @GetMapping("")
+    @RateLimit("courses-get")
     fun getCourseOfferings(
         @RequestParam(required = false) semester: String?,
     ): ResponseEntity<List<CourseOfferingDTO?>> {
@@ -25,6 +27,7 @@ class CourseOfferingsController(
     }
 
     @GetMapping("/{offeringId}")
+    @RateLimit("courses-get")
     fun getCourseOfferingById(
         @PathVariable offeringId: UUID
     ): ResponseEntity<CourseOfferingDTO?> {
@@ -33,6 +36,7 @@ class CourseOfferingsController(
     }
 
     @GetMapping("/{offeringId}/notes")
+    @RateLimit("notes-get")
     fun getNotesForOffering(
         @PathVariable offeringId: UUID,
     ): ResponseEntity<List<NoteDTO?>> {
@@ -43,6 +47,7 @@ class CourseOfferingsController(
     // === Enroll and Unenroll
 
     @PostMapping("/{offeringId}/enroll")
+    @RateLimit("enroll")
     fun enrollToOffering(
         @PathVariable offeringId: UUID,
         authentication: Authentication
@@ -55,6 +60,7 @@ class CourseOfferingsController(
     }
 
     @DeleteMapping("/{offeringId}/enroll")
+    @RateLimit("enroll")
     fun unenrollFromOffering(
         @PathVariable offeringId: UUID,
         authentication: Authentication

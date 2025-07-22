@@ -12,5 +12,6 @@ data class FullNoteDTO(
     val author: NoteAuthorDTO,
     val courseOfferingId: UUID?,
     val semester: String,
-    val classCode: String
+    val classCode: String,
+    val fileUploaded: Boolean
 )

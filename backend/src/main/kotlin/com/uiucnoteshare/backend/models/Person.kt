@@ -2,6 +2,7 @@ package com.uiucnoteshare.backend.models
 
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
+import jakarta.persistence.GeneratedValue
 import jakarta.persistence.Id
 import jakarta.persistence.Table
 import java.util.*
@@ -10,6 +11,7 @@ import java.util.*
 @Table(name = "person")
 data class Person(
     @Id
+    @GeneratedValue
     var id: UUID? = null, // <--- DB generates UUIDS
 
     @Column(nullable = false, length = 255, unique = true)

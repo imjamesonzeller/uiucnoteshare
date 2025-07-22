@@ -22,7 +22,7 @@ class CloudflareR2Client(
     @Value("\${cloudflare.r2.access-key}")
     private var accessKey: String,
 
-    @Value("\${cloudflare.r2.account-id}")
+    @Value("\${cloudflare.r2.secret-key}")
     private var secretKey: String
 ) {
 

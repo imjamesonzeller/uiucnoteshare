@@ -31,10 +31,14 @@ class UserService(
     }
 
     private fun splitFullName(fullName: String): Pair<String, String> {
-        val parts = fullName.trim().split(" ")
-        return when {
-            parts.size >= 2 -> parts[0] to parts.drop(1).joinToString(" ")
-            parts.size == 1 -> parts[0] to ""
+        val parts = fullName.trim().split(",")
+        return when (parts.size) {
+            2 -> {
+                val lastName = parts[0].trim()
+                val firstName = parts[1].trim()
+                firstName to lastName
+            }
+            1 -> parts[0].trim() to ""
             else -> "Unknown" to ""
         }
     }

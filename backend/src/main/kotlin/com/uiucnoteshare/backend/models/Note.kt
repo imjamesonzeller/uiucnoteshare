@@ -24,5 +24,8 @@ data class Note(
     @Column(columnDefinition = "TEXT")
     var caption: String? = null,
 
+    @Column(nullable = false)
+    var fileUploaded: Boolean = false,
+
     var createdAt: LocalDateTime? = null,
 )
