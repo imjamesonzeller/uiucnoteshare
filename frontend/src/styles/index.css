@@ -1,4 +1,49 @@
 @import "tailwindcss";
+@plugin '../utils/hero.ts';
+@source '../../node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}';
+@custom-variant dark (&:is(.dark *));
+
+/* Custom variant for Illini theme */
+@custom-variant illini (&:is(.illini *));
+
+/* Full Illini theme */
+@theme illini {
+    /* Base colors */
+    --color-background: #ffffff;
+    --color-foreground: #1a1a1a;
+
+    /* Primary brand colors (Illini Blue and Orange) */
+    --color-primary: #13294B;               /* Illini Blue */
+    --color-primary-foreground: #ffffff;
+
+    --color-secondary: #E84A27;             /* Illini Orange */
+    --color-secondary-foreground: #ffffff;
+
+    --color-accent: #F7A800;                /* Yellow accent (optional) */
+    --color-accent-foreground: #000000;
+
+    /* Destructive */
+    --color-destructive: #DC2626;           /* Red */
+    --color-destructive-foreground: #ffffff;
+
+    /* Muted / subtle */
+    --color-muted: #f3f4f6;
+    --color-muted-foreground: #4b5563;
+
+    /* Border / ring / input colors */
+    --color-border: #e5e7eb;
+    --color-input: #f9fafb;
+    --color-ring: #13294B;
+
+    /* Card background */
+    --color-card: #ffffff;
+    --color-card-foreground: #1a1a1a;
+
+    /* Popover background */
+    --color-popover: #ffffff;
+    --color-popover-foreground: #1a1a1a;
+}
+
 /* 
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;

@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useAuth } from "../context/AuthContext"
 import { useNavigate } from "react-router-dom"
 import { useMsal } from '@azure/msal-react'
@@ -7,6 +8,7 @@ const NavigationBar = () => {
   const { user, setUser } = useAuth()
   const { instance } = useMsal()
   const navigate = useNavigate()
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   const baseApiUrl = "http://localhost:8080"
 
@@ -56,7 +58,15 @@ const NavigationBar = () => {
           <span className="text-xl font-bold tracking-tight cursor-pointer">UIUC Note Share</span>
         </div>
 
-        {/* Nav links */}
+        {/* Mobile menu button */}
+        <button
+            className="md:hidden text-white text-2xl"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label="Toggle menu"
+        >
+          {mobileMenuOpen ? '×' : '☰'}
+        </button>
+
         <nav className="hidden md:flex space-x-6 text-sm font-medium">
           <button onClick={() => navigate('/')} className="hover:text-orange-400 transition-colors cursor-pointer">
             Browse Courses
@@ -67,7 +77,7 @@ const NavigationBar = () => {
         </nav>
 
         {/* Right side: auth controls */}
-        <div className="text-sm">
+        <div className="text-sm hidden md:block">
           {!user ? (
             <button
               onClick={handleLogin}
@@ -90,6 +100,34 @@ const NavigationBar = () => {
           )}
         </div>
       </div>
+
+      {/* Mobile nav menu */}
+      {mobileMenuOpen && (
+        // <div className="md:hidden absolute top-14 left-0 w-full bg-[#13294B] text-white text-center py-4 space-y-4 shadow-md z-40">
+        <div className="md:hidden absolute top-full left-0 w-full bg-[#13294B] text-white text-center py-4 space-y-4 shadow-md z-40">
+          <button onClick={() => { navigate('/'); setMobileMenuOpen(false) }} className="block w-full hover:text-orange-400">
+            Browse Courses
+          </button>
+          <button onClick={() => { alert('About page coming soon'); setMobileMenuOpen(false) }} className="block w-full hover:text-orange-400">
+            About
+          </button>
+          {!user ? (
+            <button
+              onClick={() => { handleLogin(); setMobileMenuOpen(false) }}
+              className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-1.5 rounded-full transition-colors"
+            >
+              Login with Microsoft
+            </button>
+          ) : (
+            <button
+              onClick={() => { handleLogout(); setMobileMenuOpen(false) }}
+              className="bg-white text-[#13294B] px-3 py-1.5 rounded-full hover:bg-gray-200 transition-colors"
+            >
+              Logout
+            </button>
+          )}
+        </div>
+      )}
     </header>
   )
 }

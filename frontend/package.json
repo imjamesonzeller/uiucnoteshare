@@ -12,11 +12,14 @@
   "dependencies": {
     "@azure/msal-browser": "^4.15.0",
     "@azure/msal-react": "^3.0.15",
+    "@heroui/react": "^2.8.1",
     "@tailwindcss/vite": "^4.1.11",
+    "framer-motion": "^12.23.9",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-router-dom": "^7.7.0",
-    "tailwindcss": "^4.1.11"
+    "tailwindcss": "^4.1.11",
+    "vite-tsconfig-paths": "^5.1.4"
   },
   "devDependencies": {
     "@eslint/js": "^9.30.1",
