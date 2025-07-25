@@ -1,10 +1,12 @@
 package com.uiucnoteshare.backend.services
 
 import com.uiucnoteshare.backend.dtos.*
+import com.uiucnoteshare.backend.models.BaseCourse
 import com.uiucnoteshare.backend.models.Note
 import com.uiucnoteshare.backend.repositories.BaseCourseRepository
 import com.uiucnoteshare.backend.repositories.CourseOfferingRepository
 import com.uiucnoteshare.backend.repositories.NoteRepository
+import org.springframework.data.domain.PageRequest
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
@@ -77,5 +79,13 @@ class BaseCourseService(
             classCode = offering.classCode,
             fileUploaded = this.fileUploaded
         )
+    }
+
+    fun searchCourses(query: String, limit: Int): List<BaseCourseSummaryDTO> {
+        if (query.isBlank()) return emptyList()
+        val sanitized = query.trim().lowercase()
+        val pageable = PageRequest.of(0, limit)
+        val courses: List<BaseCourse> = baseCourseRepository.searchCourses(sanitized, pageable)
+        return courses.map { BaseCourseSummaryDTO(it) }
     }
 }

@@ -3,7 +3,7 @@ package com.uiucnoteshare.backend.dtos
 import com.uiucnoteshare.backend.models.BaseCourse
 import java.util.*
 
-public data class BaseCourseSummaryDTO(
+data class BaseCourseSummaryDTO(
     val id: UUID?,
     val department: String,
     val courseNumber: String,

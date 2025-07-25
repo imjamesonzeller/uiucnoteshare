@@ -49,4 +49,14 @@ class CourseController(
         val notes = baseCourseService.getNotesForCourse(courseId, semester)
         return ResponseEntity.ok(notes)
     }
+
+    @GetMapping("/search")
+    @RateLimit("courses-get")
+    fun searchCourse(
+        @RequestParam query: String,
+        @RequestParam(defaultValue = "15") limit: Int
+    ): ResponseEntity<List<BaseCourseSummaryDTO>> {
+        val results = baseCourseService.searchCourses(query, limit)
+        return ResponseEntity.ok(results)
+    }
 }
