@@ -1,5 +1,6 @@
 package com.uiucnoteshare.backend.dtos
 
+import com.uiucnoteshare.backend.models.NoteUploadStatus
 import java.time.LocalDateTime
 import java.util.*
 
@@ -13,5 +14,5 @@ data class FullNoteDTO(
     val courseOfferingId: UUID?,
     val semester: String,
     val classCode: String,
-    val fileUploaded: Boolean
+    val uploadStatus: NoteUploadStatus
 )

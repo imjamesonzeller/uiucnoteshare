@@ -38,12 +38,19 @@ dependencies {
 	runtimeOnly("io.jsonwebtoken:jjwt-impl:0.11.5")
 	runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.5")
 
-	// --- AWS S3 SDK ---
+	// --- AWS SDK ---
 	implementation("software.amazon.awssdk:s3:2.32.3")
+	implementation("com.amazonaws:aws-java-sdk-rekognition:1.12.788")
 
 	// --- Bucket4J - Lettuce (Redis) ---
 	implementation("com.github.vladimir-bukhtoyarov:bucket4j-redis:7.6.0")
 	implementation("io.lettuce:lettuce-core:6.7.1.RELEASE")
+
+	// --- ClamAV Client ---
+	implementation("xyz.capybara:clamav-client:2.1.2")
+
+	// -- PDF Box ---
+	implementation("org.apache.pdfbox:pdfbox:3.0.5")
 }
 
 kotlin {

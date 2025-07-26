@@ -3,8 +3,10 @@ package com.uiucnoteshare.backend.controllers
 import com.uiucnoteshare.backend.dtos.CreateNoteRequest
 import com.uiucnoteshare.backend.dtos.CreatedNoteResponse
 import com.uiucnoteshare.backend.dtos.FullNoteDTO
+import com.uiucnoteshare.backend.dtos.NoteDTO
 import com.uiucnoteshare.backend.models.Person
 import com.uiucnoteshare.backend.ratelimiter.RateLimit
+import com.uiucnoteshare.backend.repositories.NoteRepository
 import com.uiucnoteshare.backend.services.CaptchaService
 import com.uiucnoteshare.backend.services.NoteService
 import jakarta.servlet.http.HttpServletRequest
@@ -12,6 +14,7 @@ import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.Authentication
+import org.springframework.security.core.GrantedAuthority
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
 import java.util.UUID
@@ -20,7 +23,8 @@ import java.util.UUID
 @RequestMapping("/notes")
 class NoteController(
     private val noteService: NoteService,
-    private val captchaService: CaptchaService
+    private val captchaService: CaptchaService,
+    private val noteRepository: NoteRepository,
 ) {
     @GetMapping("/{noteId}")
     @RateLimit("notes-get")
@@ -29,6 +33,17 @@ class NoteController(
     ): ResponseEntity<FullNoteDTO?> {
         val note = noteService.getNote(noteId)
         return ResponseEntity.ok(note)
+    }
+
+    @GetMapping
+    @RateLimit("notes-get")
+    fun getMyNotes(
+        authentication: Authentication,
+    ): ResponseEntity<List<NoteDTO>> {
+        val personId: UUID = (authentication.principal as Person).id
+            ?: throw ResponseStatusException(HttpStatus.UNAUTHORIZED, "Not logged in")
+        val notes = noteRepository.findAllByAuthorId(personId).map { note -> note.toNoteDTO() }
+        return ResponseEntity.ok(notes)
     }
 
     @PostMapping

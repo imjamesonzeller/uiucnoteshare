@@ -6,6 +6,7 @@ import com.uiucnoteshare.backend.dtos.CreatedNoteResponse
 import com.uiucnoteshare.backend.dtos.FullNoteDTO
 import com.uiucnoteshare.backend.dtos.NoteAuthorDTO
 import com.uiucnoteshare.backend.models.Note
+import com.uiucnoteshare.backend.models.NoteUploadStatus
 import com.uiucnoteshare.backend.models.Person
 import com.uiucnoteshare.backend.repositories.CourseOfferingRepository
 import com.uiucnoteshare.backend.repositories.NoteRepository
@@ -13,6 +14,8 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.web.server.ResponseStatusException
+import java.nio.file.Files
+import java.nio.file.Path
 import java.util.UUID
 import java.time.Duration
 
@@ -20,8 +23,15 @@ import java.time.Duration
 class NoteService(
     private val noteRepository: NoteRepository,
     private val cloudflareR2Client: CloudflareR2Client,
-    private val courseOfferingRepository: CourseOfferingRepository
+    private val courseOfferingRepository: CourseOfferingRepository,
+    private val noteProcessingService: NoteProcessingService,
+    private val asyncNoteProcessor: AsyncNoteProcessor,
 ) {
+
+    companion object {
+        private const val NOTE_BUCKET = "uiuc-note-share"
+        private const val QUARANTINE_BUCKET = "uiuc-note-share-quarantine"
+    }
 
     fun getNote(noteId: UUID): FullNoteDTO? {
         val note: Note = noteRepository.findByIdOrNull(noteId)
@@ -34,9 +44,9 @@ class NoteService(
         val author = this.author
         val offering = this.course
 
-        val objectKey = "notes/${this.id}.pdf"
+        val objectKey = "${this.id}.pdf"
         val presignedUrl = cloudflareR2Client.generatePresignedReadUrl(
-            "uiuc-note-share",
+            NOTE_BUCKET,
             objectKey,
             Duration.ofMinutes(2)
         )
@@ -56,7 +66,7 @@ class NoteService(
             courseOfferingId = offering.id,
             semester = offering.semester,
             classCode = offering.classCode,
-            fileUploaded = this.fileUploaded
+            uploadStatus = this.uploadStatus
         )
     }
 
@@ -85,8 +95,8 @@ class NoteService(
 
         val savedNote = noteRepository.save(note)
         val uploadUrl = cloudflareR2Client.generatePresignedUploadUrl(
-            bucketName = "uiuc-note-share",
-            objectKey = "notes/${savedNote.id}.pdf",
+            bucketName = NOTE_BUCKET,
+            objectKey = "${savedNote.id}.pdf",
             expiration = Duration.ofMinutes(2)
         )
 
@@ -105,7 +115,7 @@ class NoteService(
         }
 
         noteRepository.delete(note)
-        cloudflareR2Client.deleteObject("uiuc-note-share", "notes/${note.id}.pdf")
+        cloudflareR2Client.deleteObject(NOTE_BUCKET, "${note.id}.pdf")
     }
 
     fun confirmNoteUpload(noteId: UUID, person: Person) {
@@ -116,7 +126,48 @@ class NoteService(
             throw ResponseStatusException(HttpStatus.FORBIDDEN, "User is not allowed to confirm this note")
         }
 
-        note.fileUploaded = true
-        noteRepository.save(note)
+        if (note.uploadStatus == NoteUploadStatus.UPLOADED) {
+            throw ResponseStatusException(HttpStatus.CONFLICT, "File already uploaded")
+        }
+
+        withDownloadedNote(NOTE_BUCKET, "${note.id}.pdf", cloudflareR2Client) { notePdfPath ->
+            val (isSafe, reason) = noteProcessingService.isSafeNote(notePdfPath)
+            if (!isSafe) {
+                // TODO: Add logging to figure out what was "wrong" with the file.
+                // TODO: Add email service to email me when this happens so I can review ASAP
+                // Move PDF to quarantine for manual review
+                cloudflareR2Client.updateOrCreateObject(
+                    QUARANTINE_BUCKET,
+                    "${reason}-${note.id}.pdf",
+                    notePdfPath
+                )
+
+                cloudflareR2Client.deleteObject(NOTE_BUCKET, "${note.id}.pdf")
+
+                note.uploadStatus = NoteUploadStatus.QUARANTINED
+                noteRepository.save(note)
+
+                throw ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "Note is pending manual review due to possible policy violation: $reason"
+                )
+            }
+
+            asyncNoteProcessor.processUploadedNote(note, notePdfPath)
+        }
+    }
+
+    fun <T> withDownloadedNote(
+        bucket: String,
+        key: String,
+        client: CloudflareR2Client,
+        action: (Path) -> T
+    ): T {
+        val path = client.downloadObject(bucket, key)
+        return try {
+            action(path)
+        } finally {
+            Files.deleteIfExists(path)
+        }
     }
 }

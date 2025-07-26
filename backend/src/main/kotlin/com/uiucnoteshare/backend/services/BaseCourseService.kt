@@ -59,28 +59,6 @@ class BaseCourseService(
         return notes.map { it.toNoteDTO() }
     }
 
-    fun Note.toNoteDTO(): NoteDTO {
-        val author = this.author
-        val offering = this.course
-
-        return NoteDTO(
-            id = this.id,
-            title = this.title,
-            caption = this.caption,
-            createdAt = this.createdAt,
-            author = NoteAuthorDTO(
-                id = author.id!!,
-                firstName = author.firstName,
-                lastName = author.lastName,
-                profilePicture = author.profilePicture
-            ),
-            courseOfferingId = offering.id,
-            semester = offering.semester,
-            classCode = offering.classCode,
-            fileUploaded = this.fileUploaded
-        )
-    }
-
     fun searchCourses(query: String, limit: Int): List<BaseCourseSummaryDTO> {
         if (query.isBlank()) return emptyList()
         val sanitized = query.trim().lowercase()

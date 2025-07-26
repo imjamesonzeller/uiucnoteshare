@@ -65,26 +65,4 @@ class CourseOfferingService(
 
         enrollmentRepository.delete(enrollment)
     }
-
-    fun Note.toNoteDTO(): NoteDTO {
-        val author = this.author
-        val offering = this.course
-
-        return NoteDTO(
-            id = this.id,
-            title = this.title,
-            caption = this.caption,
-            createdAt = this.createdAt,
-            author = NoteAuthorDTO(
-                id = author.id!!,
-                firstName = author.firstName,
-                lastName = author.lastName,
-                profilePicture = author.profilePicture
-            ),
-            courseOfferingId = offering.id,
-            semester = offering.semester,
-            classCode = offering.classCode,
-            fileUploaded = this.fileUploaded
-        )
-    }
 }
