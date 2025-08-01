@@ -1,9 +1,6 @@
 package com.uiucnoteshare.backend.controllers
 
-import com.uiucnoteshare.backend.dtos.CreateNoteRequest
-import com.uiucnoteshare.backend.dtos.CreatedNoteResponse
-import com.uiucnoteshare.backend.dtos.FullNoteDTO
-import com.uiucnoteshare.backend.dtos.NoteDTO
+import com.uiucnoteshare.backend.dtos.*
 import com.uiucnoteshare.backend.models.Person
 import com.uiucnoteshare.backend.ratelimiter.RateLimit
 import com.uiucnoteshare.backend.repositories.NoteRepository
@@ -85,5 +82,11 @@ class NoteController(
         val person = authentication.principal as Person
         noteService.confirmNoteUpload(noteId, person)
         return ResponseEntity.ok("Note was confirmed as uploaded.")
+    }
+
+    @GetMapping("/popular")
+    @RateLimit("notes-get")
+    fun getPopularNotes(): ResponseEntity<List<PopularCourseDTO>> {
+        return ResponseEntity.ok(noteService.getPopularCourses())
     }
 }

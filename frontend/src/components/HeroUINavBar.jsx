@@ -9,7 +9,7 @@ import {
     NavbarMenuItem,
     Link,
 } from "@heroui/react";
-import {useLocation} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 import BlockILogo from "../assets/Illinois_Block_I.png";
 import AuthSection from "./AuthSection.jsx";
 
@@ -21,6 +21,7 @@ export const BlockI = () => {
 
 export default function HeroUINavBar() {
     const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+    const navigate = useNavigate()
 
     const menuItems = [
         "Profile",
@@ -36,7 +37,6 @@ export default function HeroUINavBar() {
     ];
 
     const location = useLocation();
-    const isActive = path => location.pathname === path;
 
     return (
         <Navbar onMenuOpenChange={setIsMenuOpen} className="bg-primary" maxWidth={"full"}>
@@ -46,7 +46,10 @@ export default function HeroUINavBar() {
                     className="sm:hidden text-primary-foreground"
                 />
                 <NavbarBrand className="text-primary-foreground">
-                    <div className="flex items-center space-x-2">
+                    <div
+                        className="flex items-center space-x-2 cursor-pointer"
+                        onClick={() => navigate('/')}
+                    >
                         <BlockI />
                         <p className="font-bold text-inherit">UIUC Note Share</p>
                     </div>
@@ -58,19 +61,30 @@ export default function HeroUINavBar() {
                     <Link
                         aria-current="page"
                         color="primary-foreground"
-                        className={isActive ? "underline underline-offset-4 font-semibold" : ""}
-                        href="#"
+                        className={"underline underline-offset-4 font-semibold cursor-pointer"}
+                        as="button"
+                        onPress={() => navigate('/')}
                     >
                         Dashboard
                     </Link>
                 </NavbarItem>
                 <NavbarItem>
-                    <Link color="primary-foreground" href="#">
+                    <Link
+                        color="primary-foreground"
+                        className={"cursor-pointer"}
+                        as="button"
+                        onPress={() => navigate('/browse-courses')}
+                    >
                         Browse Courses
                     </Link>
                 </NavbarItem>
                 <NavbarItem>
-                    <Link color="primary-foreground" href="#">
+                    <Link
+                        color="primary-foreground"
+                        className={"cursor-pointer"}
+                        as="button"
+                        onPress={() => navigate('/about')}
+                    >
                         About
                     </Link>
                 </NavbarItem>

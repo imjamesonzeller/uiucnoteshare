@@ -1,15 +1,13 @@
 package com.uiucnoteshare.backend.services
 
 import com.uiucnoteshare.backend.config.CloudflareR2Client
-import com.uiucnoteshare.backend.dtos.CreateNoteRequest
-import com.uiucnoteshare.backend.dtos.CreatedNoteResponse
-import com.uiucnoteshare.backend.dtos.FullNoteDTO
-import com.uiucnoteshare.backend.dtos.NoteAuthorDTO
+import com.uiucnoteshare.backend.dtos.*
 import com.uiucnoteshare.backend.models.Note
 import com.uiucnoteshare.backend.models.NoteUploadStatus
 import com.uiucnoteshare.backend.models.Person
 import com.uiucnoteshare.backend.repositories.CourseOfferingRepository
 import com.uiucnoteshare.backend.repositories.NoteRepository
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
@@ -169,5 +167,10 @@ class NoteService(
         } finally {
             Files.deleteIfExists(path)
         }
+    }
+
+    @Cacheable("popularCourses")
+    fun getPopularCourses(): List<PopularCourseDTO> {
+        return noteRepository.findTopPopularCourses()
     }
 }

@@ -10,7 +10,7 @@ const Footer = () => {
                 {/* Left: Links */}
                 <div className="flex justify-center sm:justify-start gap-6">
                     <a
-                        href="https://github.com/YOUR_REPO"
+                        href="https://github.com/imjamesonzeller"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="hover:text-orange-400 transition-colors"
