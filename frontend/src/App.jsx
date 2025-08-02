@@ -4,6 +4,7 @@ import PageLayout from './components/PageLayout'
 // import CoursePage from './pages/CoursePage'
 import AuthCallback from './pages/AuthCallback'
 import DashboardPage from "./pages/DashboardPage.jsx";
+import CoursePage from "./pages/CoursePage.jsx";
 
 const App = () => {
   return (
@@ -15,7 +16,8 @@ const App = () => {
           <Route path="/auth/callback" elemtn={<AuthCallback />} />
         </Routes> */}
         {/*<h1>Hello World</h1>*/}
-          <DashboardPage />
+        {/*  <DashboardPage />*/}
+          <CoursePage />
       </PageLayout>
     </BrowserRouter>
   )

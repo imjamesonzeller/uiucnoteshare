@@ -11,7 +11,7 @@ const EnrolledCoursesCarousel = ({ courses }) => (
                         name={course.name}
                         notes={course.notes}
                         loggedIn={true}
-                        width="77.5"
+                        width={77.5}
                     />
                 ))}
             </div>

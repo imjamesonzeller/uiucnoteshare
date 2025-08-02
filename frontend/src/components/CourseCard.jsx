@@ -1,9 +1,15 @@
 import { Card, CardHeader, CardBody, Button } from "@heroui/react";
 
-const CourseCard = ({ code, name, notes, loggedIn, width = "64" }) => {
+const CourseCard = ({ code, name, notes, loggedIn, width = 64 }) => {
+    const widthClasses = {
+        64: "w-64",
+        77.5: "w-77.5",
+        80: "w-80",
+    };
+
     return (
         <Card
-            className={`w-${width} flex-shrink-0 py-4 bg-white dark:bg-gray-900 shadow-md flex flex-col justify-between transition-transform duration-200 transform hover:-translate-y-1 hover:shadow-lg`}
+            className={`${widthClasses[width] || "w-64" } flex-shrink-0 py-4 bg-white dark:bg-gray-900 shadow-md flex flex-col justify-between transition-transform duration-200 transform hover:shadow-lg hover:scale-[1.02]`}
         >
             <CardHeader className="font-semibold">{code}</CardHeader>
             <CardBody className="space-y-2">
